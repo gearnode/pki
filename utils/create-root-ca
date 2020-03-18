@@ -1,0 +1,71 @@
+#!/usr/bin/env sh
+
+set -eu
+
+root=$(dirname $0)
+. $root/common
+
+openssl_configuration_file=""
+
+usage() {
+    cat <<EOF
+usage: $0 OPTIONS <passphrase>
+
+OPTIONS
+-c  openssl configuration file
+-h  display help
+EOF
+}
+
+OPTIND=1
+while getopts 'h' arg; do
+    case "$arg" in
+	c) openssl_configuration_file="$OPTARG" ;;
+	h) usage; exit 0 ;;
+	?) fatal "unknown option" ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -lt 1 ]; then
+    fatal "missing argument(s)"
+fi
+
+passphrase="$1"
+
+if [ -z "$openssl_configuration_file" ]; then
+    openssl_configuration_file="etc/root-ca.conf"
+fi
+
+# create directories
+mkdir -p ca/root-ca/private ca/root-ca/db crl certs
+chmod 700 ca/root-ca/private
+
+# create ca database
+cp /dev/null ca/root-ca/db/root-ca.db
+cp /dev/null ca/root-ca/db/root-ca.db.attr
+echo 01 > ca/root-ca/db/root-ca.crt.srl
+echo 01 > ca/root-ca/db/root-ca.crl.srl
+
+# create ca request
+openssl req -new \
+	  -config $openssl_configuration_file \
+	  -passin pass:$passphrase \
+	  -passout pass:$passphrase \
+	  -out ca/root-ca.csr \
+	  -keyout ca/root-ca/private/root-ca.key
+
+# create ca certificate
+openssl ca -selfsign \
+	  -config $openssl_configuration_file \
+	  -passin pass:$passphrase \
+	  -batch \
+	  -in ca/root-ca.csr \
+	  -out ca/root-ca.crt \
+	  -extensions root_ca_ext
+
+# create intial CRL
+openssl ca -gencrl \
+	  -config $openssl_configuration_file \
+	  -passin pass:$passphrase \
+	  -out crl/root-ca.crl
