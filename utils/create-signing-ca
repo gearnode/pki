@@ -13,7 +13,7 @@ usage() {
     cat <<EOF
 usage: $0 OPTIONS <name> <passphrase>
 
-OPTIONS\
+OPTIONS
 -r  root CA crt file
 -C  openssl root ca configuration file (default: $openssl_root_ca_configuration_file)
 -c  openssl configuration file
