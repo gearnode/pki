@@ -28,5 +28,5 @@ case "$1" in
     usage
     exit 0 ;;
   *)
-    fatal "unkown command" ;;
+    fatal "invalid command '$1'; type help for a list" ;;
 esac
