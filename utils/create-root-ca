@@ -53,7 +53,7 @@ openssl req -new \
 	  -passin pass:$passphrase \
 	  -passout pass:$passphrase \
 	  -out ca/root-ca.csr \
-	  -keyout ca/root-ca/private/root-ca.key
+	  -keyout ca/root-ca/private/root-ca.key > /dev/stderr
 
 # create ca certificate
 openssl ca -selfsign \
@@ -62,10 +62,16 @@ openssl ca -selfsign \
 	  -batch \
 	  -in ca/root-ca.csr \
 	  -out ca/root-ca.crt \
-	  -extensions root_ca_ext
+	  -extensions root_ca_ext > /dev/stderr
 
 # create intial CRL
 openssl ca -gencrl \
 	  -config $openssl_configuration_file \
 	  -passin pass:$passphrase \
-	  -out crl/root-ca.crl
+	  -out crl/root-ca.crl > /dev/stderr
+
+printf "Root CA created.\nCSR: %s\nKey: %s\nCRT: %s\nCRL: %s\n" \
+       ca/root-ca.csr \
+       ca/root-ca/private/root-ca.key \
+       ca/root-ca.crt \
+       crl/root-ca.crl

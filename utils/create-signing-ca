@@ -11,7 +11,7 @@ openssl_configuration_file=""
 
 usage() {
     cat <<EOF
-usage: $0 OPTIONS <name> <passphrase>
+usage: $0 OPTIONS <name> <ca-passphrase> <passphrase>
 
 OPTIONS
 -r  root CA crt file
@@ -33,7 +33,7 @@ while getopts 'h' arg; do
 done
 shift $((OPTIND - 1))
 
-if [ $# -lt 2 ]; then
+if [ $# -lt 3 ]; then
     fatal "missing argument(s)"
 fi
 
@@ -82,3 +82,9 @@ openssl ca -gencrl \
 cat ca/$name.crt $root_ca > \
     ca/$name-chain.pem
 
+printf "Siging CA created.\nCSR: %s\nKey: %s\nCRT: %s\nCRL: %s\nPEM: %s\n" \
+       ca/$name.csr \
+       ca/$name/private/$name.key \
+       ca/$name.crt \
+       crl/$name.crl \
+       ca/$name-chain.pem
