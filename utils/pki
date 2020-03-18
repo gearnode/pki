@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+
+set -eu
+
+root=$(dirname $0)
+. $root/common
+
+usage() {
+  cat <<EOF
+usage: $0 <command>
+
+List of pki commands:
+
+issue ca or signing ca certificate
+   root-ca           generate root CA
+   signing-ca        generate signing CA from root CA
+EOF
+}
+
+case "$1" in
+  "root-ca")
+    shift
+    $root/create-root-ca $@ ;;
+  "signing-ca")
+    shift
+    $root/create-signing-ca $@ ;;
+  "help")
+    usage
+    exit 0 ;;
+  *)
+    fatal "unkown command" ;;
+esac
