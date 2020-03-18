@@ -7,14 +7,9 @@ root=$(dirname $0)
 
 usage() {
   cat <<EOF
-usage: $0 <command>
-
-
-Standard commands:
-
-issue ca or signing ca certificate
-   root-ca           generate root CA
-   signing-ca        generate signing CA from root CA
+Standard commands
+root-ca           generate root CA
+signing-ca        generate signing CA from root CA
 EOF
 }
 
