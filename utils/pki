@@ -10,7 +10,12 @@ usage() {
 Standard commands
 root-ca           generate root CA
 signing-ca        generate signing CA from root CA
+version           pki tool version
 EOF
+}
+
+version() {
+  echo "pki 1.0.0.alpha  18 Mar 2020"
 }
 
 # default display help
@@ -27,6 +32,9 @@ case "$command" in
   "signing-ca")
     shift
     $root/create-signing-ca $@ ;;
+  "version")
+    version
+    exit 0 ;;
   "help")
     usage
     exit 0 ;;
