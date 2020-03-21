@@ -8,9 +8,9 @@ root=$(dirname $0)
 usage() {
   cat <<EOF
 Standard commands
-root-ca           generate root CA
-signing-ca        generate signing CA from root CA
-version           pki tool version
+ca                  generate root CA
+intermediate        generate intermediate CA
+version             pki tool version
 EOF
 }
 
@@ -26,12 +26,9 @@ if [ $# -ge 1 ]; then
 fi
 
 case "$command" in
-  "root-ca")
+  "ca" | "intermediate")
     shift
-    $root/create-root-ca $@ ;;
-  "signing-ca")
-    shift
-    $root/create-signing-ca $@ ;;
+    $root/$command $@ ;;
   "version")
     version
     exit 0 ;;
